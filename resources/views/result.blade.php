@@ -44,7 +44,18 @@
 		@foreach($items as $item)
 		<tr>
 			<td>{{$item->id}}</td>
-			<td>{{$item->data}}</td>
+			<td>
+				<?php   
+				$data = $item->data;
+				?>
+				@for($i = 0; $i <= 12; $i++)
+					@if($i==$data)
+						<span class="badge" style="background-color:red">{{$i}}</span>
+					@else
+						<span class="badge">{{$i}}</span>
+					@endif
+				@endfor
+			</td>
 			<td>
 				<?php   
 				$digits = str_split($item->price);
@@ -68,13 +79,26 @@
     
     channel.bind('my-event', function(data) {
         console.log('* Data Received *');
-        $('#myTable tr:first').after('<tr><td>'+data.id+'</td><td>'+data.data+'</td><td id='+data.id+'></td><td>'+data.detail+'</td></tr>');
+
+
+        $('#myTable tr:first').after('<tr><td>'+data.id+'</td><td id=data-'+data.id+'></td><td id='+data.id+'></td><td>'+data.detail+'</td></tr>');
+
 		// Price Digits Seperation
 		let text = data.price;
 		myArray = text.split("");
 		myArray.forEach((element) => {
 			$('#'+data.id).append('<span class="badge">'+ element +'</span>');
 		});
+		// END
+
+		// Data 1 to 12
+		for (let i = 0; i <= 12; i++) {
+			if(i==data.data){
+				$('#data-'+data.id).append('<span class="badge" style="background-color:red">'+ i +'</span>');
+			}else{
+				$('#data-'+data.id).append('<span class="badge">'+ i +'</span>');
+			}
+		}
 
     });
     
