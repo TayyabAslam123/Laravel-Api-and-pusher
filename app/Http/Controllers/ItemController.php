@@ -39,9 +39,9 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'data'=>'required',
-            'price'=>'required',
-            'detail'=>'required'
+            'data_two'=>'required',
+            'data_three'=>'required',
+            'data_twelve'=>'required'
         ]);
         
         if ($validator->fails()) {
@@ -50,32 +50,32 @@ class ItemController extends Controller
          }
          
         $var = new Item();
-        $var->data = $request->data;
-        $var->price = $request->price;
-        $var->detail = $request->detail;
+        $var->data_two = $request->data_two;
+        $var->data_three = $request->data_three;
+        $var->data_twelve = $request->data_twelve;
         $var->save();
-        
+
         ## Pusher Logic
-         $options = array(
+        $options = array(
             'cluster' => 'ap2', 
             'encrypted' => true
-            );
-            //Remember to set your credentials below.
-            $pusher = new Pusher(
-            'afbb2d4713581f829256',
-            '0d1f7215a6e3be5f69d3',
-            '1459145',
-            $options
-            );
-            $message = [
-                "id"=>$var->id,
-                "data"=>$var->data,
-                "price"=>$var->price,
-                "detail"=>$var->detail
-            ];
-            //Send a message to notify channel with an event name of  notify-event
-            $pusher->trigger('my-channel', 'my-event', $message);
-            
+        );
+        //Remember to set your credentials below.
+        $pusher = new Pusher(
+        'afbb2d4713581f829256',
+        '0d1f7215a6e3be5f69d3',
+        '1459145',
+        $options
+        );
+        $message = [
+            "id"=>$var->id,
+            "data_two"=>$var->data_two,
+            "data_three"=>$var->data_three,
+            "data_twelve"=>$var->data_twelve
+        ];
+        //Send a message to notify channel with an event name of  notify-event
+        $pusher->trigger('my-channel', 'my-event', $message);
+        
         return response()->json(['code' => 200,'msg' => 'Data saved successfully'], 200);
     }
 
@@ -106,18 +106,18 @@ class ItemController extends Controller
     {
         $item=Item::findOrFail($id);
         $validator = Validator::make($request->all(), [
-            'data'=>'required',
-            'price'=>'required',
-            'detail'=>'required'
+            'data_two'=>'required',
+            'data_three'=>'required',
+            'data_twelve'=>'required'
         ]);
         
         if ($validator->fails()) {
             $error = $validator->errors()->first();
             return response()->json(['code' => 500,'msg' => $error], 500);
         }
-        $item->data = $request->data;
-        $item->price = $request->price;
-        $item->detail = $request->detail;
+        $var->data_two = $request->data_two;
+        $var->data_three = $request->data_three;
+        $var->data_twelve = $request->data_twelve;
 
         if(!$item->isDirty()){
             return response()->json(['message'=>'you need to specify a diffirent value to update','data'=>$item],422);

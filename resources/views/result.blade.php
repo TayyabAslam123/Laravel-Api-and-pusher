@@ -35,20 +35,66 @@
 	    <thead>
 		<tr>
 			<th>ID</th>
-			<th>data</th>
-			<th>price</th>
-			<th>detail</th>
+			<th>2D</th>
+			<th>3D</th>
+			<th>12</th>
 		</tr>
 		</thead>
 		<tbody>
+        <tr id="first-row">
+            <th>-</th>
+            <th><span class="badge" id="two-animate-1"></span><span class="badge" id="two-animate-2"></span></th>
+            <th><span class="badge" id="three-animate-1"></span><span class="badge" id="three-animate-2"></span><span class="badge" id="three-animate-3"></th>
+            <th>
+                @for($i = 0; $i <= 12; $i++)
+					<!--Adding 0 -->
+					<?php
+						if($i < 10){
+							$i = '0'.$i;
+						}
+					?>
+					<!---->
+				    <span class="badge">{{$i}}</span>
+				@endfor        
+            </th>
+        </tr>    
+
+
 		@foreach($items as $item)
 		<tr>
+            <!-- ID -->
 			<td>{{$item->id}}</td>
+            <!-- 2D -->
+            <td>
+				<?php   
+				$digits = str_split($item->data_two);
+				?>
+				@foreach($digits as $digit)
+				<span class="badge">{{$digit}}</span>
+				@endforeach
+			</td>
+            <!-- 3D -->
+            <td>
+				<?php   
+				$digits = str_split($item->data_three);
+				?>
+				@foreach($digits as $digit)
+				<span class="badge">{{$digit}}</span>
+				@endforeach
+			</td>
+            <!-- Twelve 12 -->
 			<td>
 				<?php   
-				$data = $item->data;
+				$data = $item->data_twelve;
 				?>
 				@for($i = 0; $i <= 12; $i++)
+					<!--Adding 0 -->
+					<?php
+						if($i < 10){
+							$i = '0'.$i;
+						}
+					?>
+					<!---->
 					@if($i==$data)
 						<span class="badge" style="background-color:red">{{$i}}</span>
 					@else
@@ -56,19 +102,43 @@
 					@endif
 				@endfor
 			</td>
-			<td>
-				<?php   
-				$digits = str_split($item->price);
-				?>
-				@foreach($digits as $digit)
-				<span class="badge">{{$digit}}</span>
-				@endforeach
-			</td>
-			<td>{{$item->detail}}</td>
+            <!-- END -->
+
 		</tr>
 	    @endforeach
 	    <tbody>
 	</table>
+  
+  <script>
+      $( document ).ready(function() {
+          animateShipped();
+      });
+    var totalShipped = 9;
+    var shippedDisplay = 0;
+    var shippedStep = totalShipped / (2 * 1000 / 100); // Animation duration 2 sec
+    function animateShipped() {
+        if (shippedDisplay > totalShipped)
+        shippedDisplay = totalShipped;
+        document.getElementById("two-animate-1").innerHTML = Math.round(shippedDisplay);
+        document.getElementById("two-animate-2").innerHTML = Math.round(shippedDisplay);
+        document.getElementById("three-animate-1").innerHTML = Math.round(shippedDisplay);
+        document.getElementById("three-animate-2").innerHTML = Math.round(shippedDisplay);
+        document.getElementById("three-animate-3").innerHTML = Math.round(shippedDisplay);
+
+
+
+        if(shippedDisplay == 9){
+            shippedDisplay = 0;
+        }
+        if (shippedDisplay < totalShipped) {
+        shippedDisplay += shippedStep;
+        setTimeout(animateShipped, 50);
+        }
+    }
+   
+  
+  </script>
+
 	
   <script>
 
@@ -81,22 +151,34 @@
         console.log('* Data Received *');
 
 
-        $('#myTable tr:first').after('<tr><td>'+data.id+'</td><td id=data-'+data.id+'></td><td id='+data.id+'></td><td>'+data.detail+'</td></tr>');
+        // $('#myTable tr:first').after('<tr><td>'+data.id+'</td><td id=data-two-'+data.id+' ></td><td id=data-three-'+data.id+'></td><td id=data-twelve-'+data.id+'></td></tr>');
+        $('#first-row').after('<tr><td>'+data.id+'</td><td id=data-two-'+data.id+' ></td><td id=data-three-'+data.id+'></td><td id=data-twelve-'+data.id+'></td></tr>');
 
-		// Price Digits Seperation
-		let text = data.price;
+		// 2D
+		let text = data.data_two;
 		myArray = text.split("");
 		myArray.forEach((element) => {
-			$('#'+data.id).append('<span class="badge">'+ element +'</span>');
+			$('#data-two-'+data.id).append('<span class="badge">'+ element +'</span>');
+		});
+		// END
+
+        // 3D
+		let txt = data.data_three;
+		myArray = txt.split("");
+		myArray.forEach((element) => {
+			$('#data-three-'+data.id).append('<span class="badge">'+ element +'</span>');
 		});
 		// END
 
 		// Data 1 to 12
 		for (let i = 0; i <= 12; i++) {
-			if(i==data.data){
-				$('#data-'+data.id).append('<span class="badge" style="background-color:red">'+ i +'</span>');
+		
+			if(i==data.data_twelve){
+				if(i < 10){ i = '0'+i;}
+				$('#data-twelve-'+data.id).append('<span class="badge" style="background-color:red">'+ i +'</span>');
 			}else{
-				$('#data-'+data.id).append('<span class="badge">'+ i +'</span>');
+				if(i < 10){ i = '0'+i;}
+				$('#data-twelve-'+data.id).append('<span class="badge">'+ i +'</span>');
 			}
 		}
 
