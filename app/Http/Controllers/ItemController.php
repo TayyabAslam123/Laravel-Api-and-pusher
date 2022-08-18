@@ -39,8 +39,8 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'data_two'=>'required',
-            'data_three'=>'required',
+            // 'data_two'=>'required',
+            // 'data_three'=>'required',
             'data_twelve'=>'required'
         ]);
         
@@ -142,5 +142,12 @@ class ItemController extends Controller
         }
         $item->delete();
         return response()->json(['code' => 200,'msg' => 'Data deleted successfully'], 200);
+    }
+
+
+    public function getData(){
+
+        $items = Item::Orderby('id', 'DESC')->limit(5)->get();
+        return response()->json(['status'=>'Success','message'=>'Data received', 'data'=>$items], 200);        
     }
 }

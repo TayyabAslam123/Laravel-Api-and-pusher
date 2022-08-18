@@ -20,3 +20,5 @@ Route::get('/get-result', function () {
     $items = App\Item::Orderby('id', 'DESC')->get();
     return view('result',compact('items'));
 });
+
+Route::get('get-data','ItemController@getData');
