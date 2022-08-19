@@ -105,7 +105,11 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item=Item::findOrFail($id);
+        // Update using draw ID
+        // Send Draw Id in update api call
+        // 27.0.0.1:8000/api/item/{ DRAW ID }
+        
+        $item=Item::where('draw_id', $id)->first();
         $validator = Validator::make($request->all(), [
             'draw_id' => 'required',
             'data_twelve'=>'required'
