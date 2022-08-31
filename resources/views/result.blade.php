@@ -35,8 +35,12 @@
 			<h1 style="color:red">LOGO</h1>
 
 				<br><br>
-				<div class="alert alert-success" style="background-color: white;"> <strong>POST</strong>
-					<a href="#" class="alert-link"></a>. </div>
+				<div class="alert alert-success" style="background-color: white;"><p>POST</p>
+					<h3 class="text-right"><b>Count Down</b></h3>
+					<h3 class="text-right" id="time">15</h3>
+					<h3 class="text-right" id="api-time" style="display: none;">15</h3>
+				</div>
+
 				<div class="container-fluid" style="background-color: white;" id="all-content">
 				<br>
 
@@ -165,6 +169,29 @@
 
 <!---Scripts--->
 <script>
+
+	// Timer Logic
+	var fivteenMin = 60 * 15;
+	display = $('#time');
+	startTimer(fivteenMin, display);
+
+    // Timer Funtion
+	function startTimer(duration, display) {
+			var timer = duration, minutes, seconds;
+			setInterval(function () {
+				minutes = parseInt(timer / 60, 10)
+				seconds = parseInt(timer % 60, 10);
+				minutes = minutes < 10 ? "0" + minutes : minutes;
+				seconds = seconds < 10 ? "0" + seconds : seconds;
+				display.text(minutes + ":" + seconds);
+
+				if (--timer < 0) {
+					// timer = duration;
+					$('#all-content').html('');
+				}
+
+			}, 1000);
+    }
     
 
     var totalShipped = 9;
@@ -214,6 +241,13 @@
     var channel = pusher.subscribe('my-channel');
     // Event received now do your own logic accordingly
     channel.bind('my-event', function(data) {
+
+		// Reset Timer
+		$("#time").css("display", "none");
+		$("#api-time").css("display", "block");
+		var fivteenMin = 60 * 15;
+		display = $('#api-time');
+		startTimer(fivteenMin, display);
 
     	console.log('* Data Received *');
     	console.log('* Loading .... *');
