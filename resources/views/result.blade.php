@@ -38,7 +38,6 @@
 				<div class="alert alert-success" style="background-color: white;"><p>POST</p>
 					<h3 class="text-right"><b>Count Down</b></h3>
 					<h3 class="text-right" id="time">15</h3>
-					<h3 class="text-right" id="api-time" style="display: none;">15</h3>
 				</div>
 
 				<div class="container-fluid" style="background-color: white;" id="all-content">
@@ -162,6 +161,15 @@
 
 	</div>
 	</div>
+    <!--Manage Audio-->
+	<audio id="audioplayer_notice" controls="controls" style="display: none;">
+	<source type="audio/wav" src="https://camloto.azurewebsites.net/Audio/winning.wav">	
+	</audio>
+	<input id="hdGameID" type="hidden" value="0">
+	<input id="hdServer" type="hidden" value="0">
+    <!--Manage Audio-->
+
+
 
 </body>
 </html>
@@ -170,28 +178,49 @@
 <!---Scripts--->
 <script>
 
+    var myTimer;
 	// Timer Logic
 	var fivteenMin = 60 * 15;
 	display = $('#time');
 	startTimer(fivteenMin, display);
-
     // Timer Funtion
 	function startTimer(duration, display) {
+		    var timer ;
+			timer = 0 ;
 			var timer = duration, minutes, seconds;
-			setInterval(function () {
+			myTimer = setInterval(function () {
+				console.log(timer);
 				minutes = parseInt(timer / 60, 10)
 				seconds = parseInt(timer % 60, 10);
 				minutes = minutes < 10 ? "0" + minutes : minutes;
 				seconds = seconds < 10 ? "0" + seconds : seconds;
 				display.text(minutes + ":" + seconds);
+				if(timer < 10){
+					document.getElementById('audioplayer_notice').play();
+				}
 
 				if (--timer < 0) {
-					// timer = duration;
-					$('#all-content').html('');
+					clearInterval(myTimer);
+					$('#time').text('Waiting ....');
+					
+					$('#all-content').prepend('<table class="table table-bordered">'+
+					'<thead><tr class="table-info"><th style="width: 150px;background-color: lightblue;">ID:00</th>'+
+					'<th style="background-color: lightblue;">Date: 0000-00-00</th>'+
+					'</tr></thead><tbody>'+
+					'<tr><td>2D :</td><td><span class="badge two-animate-1 right-badge"></span><span class="badge two-animate-2 right-badge"></span></td></tr>'+
+					'<tr><td>3D :</td><td><span class="badge three-animate-1 right-badge"></span><span class="badge three-animate-2 right-badge"></span><span class="badge three-animate-3 right-badge"></td></tr>'+
+					'<tr><td>12 : </td><td id="data-twelve-default"></td></tr></tbody></table>');
+					for (let i = 0; i <= 12; i++) {		
+						if(i < 10){
+							i = '0'+i;
+						}
+						$('#data-twelve-default').append('<span class="badge">'+ i +'</span>');
+					}
+		
 				}
 
 			}, 1000);
-    }
+    } //end-function
     
 
     var totalShipped = 9;
@@ -242,15 +271,14 @@
     // Event received now do your own logic accordingly
     channel.bind('my-event', function(data) {
 
+		console.log('* Data Received *');
+		console.log('* Loading .... *');
 		// Reset Timer
-		$("#time").css("display", "none");
-		$("#api-time").css("display", "block");
+		document.getElementById('audioplayer_notice').play();
+		$('#time').text('');
 		var fivteenMin = 60 * 15;
-		display = $('#api-time');
+		display = $('#time');
 		startTimer(fivteenMin, display);
-
-    	console.log('* Data Received *');
-    	console.log('* Loading .... *');
 		// Left Side
 		$.ajax({
           type: "GET",
