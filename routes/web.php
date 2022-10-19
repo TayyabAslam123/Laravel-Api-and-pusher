@@ -37,3 +37,11 @@ Route::get('get-result', function(){
 
 ## For Geting  data on front-end after API is called and event is triggered 
 Route::get('get-data','ItemController@getTopResult');
+
+## New Draw Page Design
+Route::get('draw', function(){
+    return view('new-draw-page');
+});
+
+
+
