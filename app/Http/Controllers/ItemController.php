@@ -40,7 +40,12 @@ class ItemController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'draw_id' => 'required',
-            'data_twelve'=>'required'
+            'a'=>'required',
+            'b'=>'required',
+            'c'=>'required',
+            'd'=>'required',
+            'e'=>'required',
+
         ]);
         
         if ($validator->fails()) {
@@ -49,10 +54,12 @@ class ItemController extends Controller
          }
          
         $var = new Item();
-        $var->data_two = $request->data_two;
-        $var->data_three = $request->data_three;
-        $var->data_twelve = $request->data_twelve;
         $var->draw_id = $request->draw_id;
+        $var->a = $request->a;
+        $var->b= $request->b;
+        $var->c= $request->c;
+        $var->d= $request->d;
+        $var->e= $request->e;
         $var->save();
 
         ## Pusher Logic
@@ -70,9 +77,11 @@ class ItemController extends Controller
         $message = [
             "id"=>$var->id,
             "draw_id" => $var->draw_id,
-            "data_two"=>$var->data_two,
-            "data_three"=>$var->data_three,
-            "data_twelve"=>$var->data_twelve
+            "a"=>$var->a,
+            "b"=>$var->b,
+            "c"=>$var->c,
+            "d"=>$var->d,
+            "e"=>$var->e,
         ];
         //Send a message to notify channel with an event name of  notify-event
         $pusher->trigger('my-channel', 'my-event', $message);
@@ -120,9 +129,11 @@ class ItemController extends Controller
             return response()->json(['code' => 500,'msg' => $error], 500);
         }
         $item->draw_id = $request->draw_id;
-        $item->data_two = $request->data_two;
-        $item->data_three = $request->data_three;
-        $item->data_twelve = $request->data_twelve;
+        $var->a = $request->a;
+        $var->b= $request->b;
+        $var->c= $request->c;
+        $var->d= $request->d;
+        $var->e= $request->e;
 
 
         if(!$item->isDirty()){
@@ -146,9 +157,11 @@ class ItemController extends Controller
         $message = [
             "id"=>$item->id,
             "draw_id" => $item->draw_id,
-            "data_two"=>$item->data_two,
-            "data_three"=>$item->data_three,
-            "data_twelve"=>$item->data_twelve
+            "a"=>$var->a,
+            "b"=>$var->b,
+            "c"=>$var->c,
+            "d"=>$var->d,
+            "e"=>$var->e,
         ];
         //Send a message to notify channel with an event name of  notify-event
         $pusher->trigger('my-channel', 'my-event', $message);
@@ -177,24 +190,8 @@ class ItemController extends Controller
     ## To fetch result's on front-end when event is triggered via API
     public function getTopResult(){
 
-        $items = Item::Orderby('id', 'DESC')->limit('10')->get();
-        $arr1=[]; // For Left Side
-        $arr2=[]; // For Righ Side
-
-        for($i=0; $i<10; $i++){
-            // Left side data
-            if($i<5 && isset($items[$i])){
-                $arr1[]= $items[$i];
-            }
-
-            // Right side data
-            if($i>4 && $i<10 && isset($items[$i]))
-            {
-                $arr2[]=$items[$i];
-            }
-            
-        }
-        return response()->json(['status'=>'Success','message'=>'Data received', 'left_data'=>$arr1, 'right_data'=>$arr2, ], 200);
+        $items = Item::Orderby('id', 'DESC')->limit('10')->get();   
+        return response()->json(['status'=>'Success','message'=>'Data received', 'past_draw' => $items], 200);
     }
 
 
