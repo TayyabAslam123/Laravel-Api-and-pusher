@@ -306,6 +306,7 @@
 			</section>
 			<footer> </footer>
 			<div class="container">
+
 			<!--Manage Audio-->
 			<audio id="audioplayer_notice" controls="controls" style="display: none;">
 			<source type="audio/wav" src="https://camloto.azurewebsites.net/Audio/winning.wav">	
@@ -317,7 +318,7 @@
 		<script>
 			var myTimer;
 			// Timer Logic
-			var fivteenMin = 60 * 15;
+			var fivteenMin = 60 * 15; // 15 mins ( you can change accordingly)
 			display = $('#time');
 			startTimer(fivteenMin, display);
 			// Timer Funtion
@@ -333,26 +334,29 @@
 				seconds = seconds < 10 ? "0" + seconds : seconds;
 				display.text(minutes + ":" + seconds);
 				if(timer < 10){
-				document.getElementById('audioplayer_notice').play();
+					// start playing sound in last 10 seconds
+					document.getElementById('audioplayer_notice').play();
 				}
 
+				// Timer Completion
 				if (--timer < 0) {
-				clearInterval(myTimer);
-				$('#time').text('Waiting ....');
-				$('.green').css({"background-color": "#6fc00f", "color": "#fff"});
-				$('#my-draw').html('<div class="lotto-special-num">\
-				<div class="span-result-letter" style="background-color: green;">A</div> <span id="span_result1"></span> </div>\
-				<div class="lotto-special-num">\
-				<div class="span-result-letter" style="background-color: green;">B</div> <span id="span_result2"></span> </div>\
-				<div class="lotto-special-num">\
-				<div class="span-result-letter" style="background-color: green;">C</div> <span id="span_result3"></span> </div>\
-				<div class="lotto-special-num">\
-				<div class="span-result-letter" style="background-color: green;">D</div> <span id="span_result4"></span> </div>\
-				<div class="lotto-special-num">\
-				<div class="span-result-letter" style="background-color: green;">E</div> <span id="span_result5"></span> </div>\
-				');
 
-				animateTwoD();
+					clearInterval(myTimer);
+					$('#time').text('Waiting ....');
+					$('.green').css({"background-color": "#6fc00f", "color": "#fff"});
+					$('#my-draw').html('<div class="lotto-special-num">\
+					<div class="span-result-letter" style="background-color: green;">A</div> <span id="span_result1"></span> </div>\
+					<div class="lotto-special-num">\
+					<div class="span-result-letter" style="background-color: green;">B</div> <span id="span_result2"></span> </div>\
+					<div class="lotto-special-num">\
+					<div class="span-result-letter" style="background-color: green;">C</div> <span id="span_result3"></span> </div>\
+					<div class="lotto-special-num">\
+					<div class="span-result-letter" style="background-color: green;">D</div> <span id="span_result4"></span> </div>\
+					<div class="lotto-special-num">\
+					<div class="span-result-letter" style="background-color: green;">E</div> <span id="span_result5"></span> </div>\
+					');
+
+					animateNumbers();
 				
 				}
 
@@ -365,7 +369,7 @@
 			var totalShipped = 99;
 			var shippedDisplay = 0;
 		    var shippedStep = totalShipped / (2 * 1000 / 100); // Animation duration 2 sec
-			function animateTwoD() {
+			function animateNumbers() {
 				if (shippedDisplay > totalShipped)
 				shippedDisplay = totalShipped;
 		
@@ -380,9 +384,10 @@
 				}
 				if (shippedDisplay < totalShipped) {
 					shippedDisplay += shippedStep;
-					setTimeout(animateTwoD, 50);
+					setTimeout(animateNumbers, 50);
 				}
 			}
+
 			// Enable pusher logging - don't include this in production
 			Pusher.logToConsole = true;
 			var pusher = new Pusher('afbb2d4713581f829256', {cluster: 'ap2'});
@@ -390,10 +395,11 @@
 			// Event received now do your own logic accordingly
 			channel.bind('my-event', function(data) {
 
-		        document.getElementById('audioplayer_notice').play();
+				// play sound
 				console.log('** DATA RECEIVED **');
+		        document.getElementById('audioplayer_notice').play();
 				// Set Draw Id Data
-				$('#draw-id').text('Draw ID : '+ data.draw_id);
+				$('#draw-id').text('Draw ID : '+ data.draw_id); // draw id
 				$('#my-draw').html('');
 				$('#my-draw').html('<div class="lotto-special-num">\
 				<div class="span-result-letter" style="background-color: green;">A</div> <span>'+data.a+'</span> </div>\
@@ -406,17 +412,16 @@
 				<div class="lotto-special-num">\
 				<div class="span-result-letter" style="background-color: green;">E</div> <span>'+data.e+'</span> </div>\
 				');
-				// Set Numbers
+				// Set Numbers color
 				$('#top_result_'+data.a).css({"background-color": "red", "color": "white"});
 				$('#top_result_'+data.b).css({"background-color": "red", "color": "white"});
 				$('#top_result_'+data.c).css({"background-color": "red", "color": "white"});
 				$('#top_result_'+data.d).css({"background-color": "red", "color": "white"});
 				$('#top_result_'+data.e).css({"background-color": "red", "color": "white"});
 
-
                 // Reset Time
 				$('#time').text('');
-				var fivteenMin = 60 * 15;
+				var fivteenMin = 60 * 15; // 15 mins ( you can change accordingly)
 				display = $('#time');
 				startTimer(fivteenMin, display);
 				// Get Data
@@ -428,7 +433,7 @@
 					resp = response;
 					console.log(resp);
 					$('#all-past-result').html('');
-					// Past Draw Data
+					// Past Draw Data on right side
 					$.each(resp.past_draw,function(i,v){
 					$('#all-past-result').append('<div class="recent-item">\
 						<p><span style="margin-right: 15px">Draw Id :'+v.draw_id+'</span></p>\
@@ -448,7 +453,6 @@
 			
 			});
 		</script>
-
 
 			<input id="hdServer" type="hidden" value="0" /> </div>
 			<script src="/js/signalr/dist/browser/signalr.js"></script>
