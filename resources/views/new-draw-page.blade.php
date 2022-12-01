@@ -394,9 +394,10 @@
 			var channel = pusher.subscribe('my-channel');
 			// Event received now do your own logic accordingly
 			channel.bind('my-event', function(data) {
+				console.log(data);
 
-				// play sound
 				console.log('** DATA RECEIVED **');
+				// play sound
 		        document.getElementById('audioplayer_notice').play();
 				// Set Draw Id Data
 				$('#draw-id').text('Draw ID : '+ data.draw_id); // draw id
